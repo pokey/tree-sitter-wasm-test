@@ -4,23 +4,27 @@
   const Parser = window.TreeSitter;
   Parser.init().then(() => {
     const parser = new Parser();
-    Parser.Language.load("/tree-sitter-python.wasm").then((language) => {
+    Parser.Language.load("/tree-sitter-xml.wasm").then((language) => {
       parser.setLanguage(language);
       const sourceCode = `
-def aaa(bbb, ccc: int):
-    pass
+<note>
+<to>Tove</to>
+<from>Jani</from>
+<heading>Reminder</heading>
+<body>Don't forget me this weekend!</body>
+</note>
 `;
       const tree = parser.parse(sourceCode);
       console.log(tree.rootNode.toString());
-      const query = language.query(`
-(_
-  (_) @_.leading.start.endOf
-  .
-  type: (_) @type @_.leading.end.startOf
-) @_.domain
-`);
-      const matches = query.matches(tree.rootNode);
-      console.log(matches);
+      //       const query = language.query(`
+      // (_
+      //   (_) @_.leading.start.endOf
+      //   .
+      //   type: (_) @type @_.leading.end.startOf
+      // ) @_.domain
+      // `);
+      //       const matches = query.matches(tree.rootNode);
+      //       console.log(matches);
     });
   });
 </script>
