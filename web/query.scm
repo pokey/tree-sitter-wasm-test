@@ -1,4 +1,3 @@
-
 (_
   (_) @_.leading.start.endOf
   .

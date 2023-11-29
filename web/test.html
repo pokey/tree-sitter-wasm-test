@@ -1,30 +1,29 @@
 <script src="/tree-sitter.js"></script>
 
 <script>
-  const Parser = window.TreeSitter;
-  Parser.init().then(() => {
+  (async () => {
+    // Params
+    const LANGUAGE_WASM_PATH = "/tree-sitter-python.wasm";
+    const DOCUMENT_PATH = "/test.py";
+    const QUERY_PATH = "/query.scm";
+
+    // Init
+    const Parser = window.TreeSitter;
+    await Parser.init();
     const parser = new Parser();
-    Parser.Language.load("/tree-sitter-xml.wasm").then((language) => {
-      parser.setLanguage(language);
-      const sourceCode = `
-<note>
-<to>Tove</to>
-<from>Jani</from>
-<heading>Reminder</heading>
-<body>Don't forget me this weekend!</body>
-</note>
-`;
-      const tree = parser.parse(sourceCode);
-      console.log(tree.rootNode.toString());
-      //       const query = language.query(`
-      // (_
-      //   (_) @_.leading.start.endOf
-      //   .
-      //   type: (_) @type @_.leading.end.startOf
-      // ) @_.domain
-      // `);
-      //       const matches = query.matches(tree.rootNode);
-      //       console.log(matches);
-    });
-  });
+    const language = await Parser.Language.load(LANGUAGE_WASM_PATH);
+    parser.setLanguage(language);
+
+    // Parse
+    const sourceCode = await (await fetch(DOCUMENT_PATH)).text();
+    const tree = parser.parse(sourceCode);
+    console.log(tree.rootNode.toString());
+
+    // Query
+    if (QUERY_PATH != null) {
+      const query = language.query(await (await fetch(QUERY_PATH)).text());
+      const matches = query.matches(tree.rootNode);
+      console.log(matches);
+    }
+  })();
 </script>
