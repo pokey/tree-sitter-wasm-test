@@ -27,7 +27,7 @@ fi
 COMMIT_SHA="$1"
 
 # Get runs and filter by COMMIT_SHA
-RUN_DATA=$(gh run list --repo tree-sitter/tree-sitter --branch master -w CICD --json headSha,databaseId -q "map(select(.headSha == \"$COMMIT_SHA\")) | .[0].databaseId" 2>/dev/null)
+RUN_DATA=$(gh run list --repo tree-sitter/tree-sitter --branch master -w CI --json headSha,databaseId -q "map(select(.headSha == \"$COMMIT_SHA\")) | .[0].databaseId")
 
 # Check for gh errors
 if [ $? -ne 0 ]; then
